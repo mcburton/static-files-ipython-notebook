@@ -1,0 +1,17 @@
+<html>
+    <head>
+    <title>Some HTML file</title>
+    </head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+    <script>
+    d3.json("foo.json", function(data) {
+        d3.select("ul").selectAll("li")
+            .data(data).enter()
+                .append("li")
+                    .text(function(d) { return d; });
+    });
+    </script>
+    <body>
+        <ul>
+    </body>
+</html>
