@@ -1696,9 +1696,14 @@ init_mathjax();
 
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="playing-with-static-files-in-the-ipython-notebook">Playing with static files in the iPython Notebook</h1>
-<p>So there is a neat and only <a href="https://github.com/ipython/ipython/pull/1211/">marginally documented</a> feature in the iPython notebook. Since the notebook is a web server, it can serve up files beyond those in your notebook. Specifically, it can serve up files the Notebook's directory.</p>
-<p>I've uploaded the various files to a <a href="https://github.com/mcburton/static-files-ipython-notebook">github repository here</a></p>
+<p>by <a href="http://twitter.com/mcburton">Matt Burton</a> August 12th, 2013</p>
+<p>So there is a neat and <a href="https://github.com/ipython/ipython/pull/1211/">marginally documented</a> feature in the iPython notebook that allows serving up static files using the Notebook web server. By prepending <code>files/</code> followed by a filenaame you can serve up the contents of the Notebook's working directory. NEATO!</p>
+<p>I decided to brew up a notebook playing around with these features and seeing what happens when you try and load up these files in various scenarios. I will probably write a follow up post about <em>how</em> I plan to use this functionality (if at all) at a later date.</p>
+<p>I've uploaded the various files associated with this notebook to a <a href="https://github.com/mcburton/static-files-ipython-notebook">github repository here</a></p>
 <p><strong>NOTE: If you are viewing the static version of this Notebook none of the links or iframes will work. I have included screenshots of the iframes for your convenience, but the FileLinks() and markdown links won't work.</strong></p>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First I will write a very basic webpage to the current working directory using the <code>%%writefile</code> cell magic.</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
@@ -1739,44 +1744,15 @@ Overwriting foo.html
 
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now you need to link to <code>foo.html</code> by prepending <code>files/</code> to the url. If you are running this notebook and click on <a href="foo.html">this link</a> it will open <code>foo.html</code> in a new tab.</p>
+<p>Now you can link to <code>foo.html</code> by prepending <code>files/</code> to its filename. If you are running this notebook and click on <a href="foo.html">this link</a> it will open <code>foo.html</code> in a new tab.</p>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Ok, now I am going to write a JSON file with some data to play with, you'll see why in a second.</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
 In&nbsp;[2]:
-</div>
-<div class="input_area box-flex1">
-<div class="highlight"><pre><span class="n">ls</span> <span class="o">-</span><span class="n">l</span>
-</pre></div>
-
-</div>
-</div>
-
-<div class="vbox output_wrapper">
-<div class="output vbox">
-
-
-<div class="hbox output_area"><div class="prompt"></div>
-<div class="box-flex1 output_subarea output_stream output_stdout">
-<pre>
-total 40
--rw-r--r--  1 mcburton  staff    233 Aug 12 15:49 foo.html
--rw-r--r--  1 mcburton  staff     22 Aug 12 15:49 foo.json
--rw-r--r--  1 mcburton  staff  11734 Aug 12 15:39 static-files.ipynb
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell vbox">
-<div class="input hbox">
-<div class="prompt input_prompt">
-In&nbsp;[3]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="o">%%</span><span class="k">writefile</span> <span class="n">foo</span><span class="o">.</span><span class="n">json</span>
@@ -1802,6 +1778,9 @@ Overwriting foo.json
 </div>
 </div>
 
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's see what is currently in this directory.</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
@@ -1834,6 +1813,9 @@ total 40
 </div>
 </div>
 
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now I can generate HTML pages with fancy javascript libraries like <a href="http://d3js.org">D3.js</a> to load the JSON file I generated above. You could imagine a workflow that pseudo replicates a dynamic webserver by generating JSON files in the interpreter, writing them to disk, and then loading them up from a static HTML page (though there are problems with this noted below). It doesn't give you all the power of a dynamic web application server like <a href="http://flask.pocoo.org/">flask</a> or <a href="https://www.djangoproject.com/">django</a>, but for interactive analysis it could be quite useful. This workflow also plays better with revision control.</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
@@ -1885,15 +1867,12 @@ Writing jsonfoo.html
 <p>Now you need to link to <code>jsonfoo.html</code> by adding <code>files/</code> to the url. If you are running this notebook and click on <a href="jsonfoo.html">this link</a> it will open <code>jsonfoo.html</code> in a new tab.</p>
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Based upon this notebook on <a href="http://nbviewer.ipython.org/url/github.com/ipython/ipython/raw/master/examples/notebooks/Part%205%20-%20Rich%20Display%20System.ipynb">iPython's Rich Display System</a> we can do a few more fun things with the static file serving capabilties.</p>
-</div>
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>For example, we can use the <code>%%HTML</code> magic to load up <code>files/jsonfoo.html</code> in an iframe.</p>
+<p>Based upon this notebook on <a href="http://nbviewer.ipython.org/url/github.com/ipython/ipython/raw/master/examples/notebooks/Part%205%20-%20Rich%20Display%20System.ipynb">iPython's Rich Display System</a> we can do a few more fun things with the static file serving capabilties. For example, we can use the <code>%%HTML</code> magic to load up <code>files/jsonfoo.html</code> in an iframe.</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[8]:
+In&nbsp;[5]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="o">%%</span><span class="k">HTML</span>
@@ -2427,7 +2406,7 @@ xqkXAQQQQAABBBAYdgJE3mE35RSMAAIIIIAAAggMN4H/DxDpQck4b7G2AAAAAElFTkSuQmCC
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[10]:
+In&nbsp;[4]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="o">%%</span><span class="k">HTML</span>
@@ -3162,7 +3141,7 @@ In&nbsp;[16]:
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[19]:
+In&nbsp;[6]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="o">%%</span><span class="k">writefile</span> <span class="n">foo</span><span class="o">.</span><span class="n">json</span>
@@ -3192,7 +3171,7 @@ Overwriting foo.json
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
-In&nbsp;[20]:
+In&nbsp;[7]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="o">%%</span><span class="k">HTML</span>
@@ -3723,7 +3702,38 @@ NIsAAggggAACCCS1wP8HQgtWFbNsOw4AAAAASUVORK5CYII=
 
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>I am not sure if there is a way to get %%HTML to force a refresh, the best solution I've seen is to open up the file in a new tabe and do shift-refresh to get the latest.</p>
+<p>That is odd considering we overwrote <code>foo.json</code> with additional data. Hrm.</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">
+In&nbsp;[8]:
+</div>
+<div class="input_area box-flex1">
+<div class="highlight"><pre><span class="n">cat</span> <span class="n">foo</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+
+</div>
+</div>
+
+<div class="vbox output_wrapper">
+<div class="output vbox">
+
+
+<div class="hbox output_area"><div class="prompt"></div>
+<div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+[1,2,3,4,5,6,7,8,9,10,11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I am not sure if there is a way to to force a refresh within iframes embedded in the Notebook with %%HTML. The best solution I've seen is to open up the file in a new tab and do shift-refresh to get the latest version in the browser cache.</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
@@ -4291,6 +4301,9 @@ AElFTkSuQmCC
 </div>
 </div>
 
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The browser cache issue makes interactive interpretation a bit of a challenge, but never-the-less, this is a pretty interesting feature!</p>
 </div>
 </body>
 </html>
